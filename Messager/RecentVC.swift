@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  RecentVC.swift
 //  Messager
 //
 //  Created by Spencer Forrest on 12/03/2017.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class RecentVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
