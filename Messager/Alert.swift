@@ -13,7 +13,7 @@ class Alert {
         let alertController = UIAlertController(title: title, message:
             message, preferredStyle: UIAlertControllerStyle.alert)
         alertController.addAction(UIAlertAction(title: buttonTitle, style: UIAlertActionStyle.cancel,handler: nil))
-        
+         
         vc.present(alertController, animated: true, completion: nil)
     }
 }

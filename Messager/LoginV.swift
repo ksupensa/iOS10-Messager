@@ -50,7 +50,7 @@ class LoginV: UIView {
     
     let profileImgView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "camera")
+        imageView.image = UIImage(named: CAMERA_IMG)
         imageView.contentMode = UIViewContentMode.scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -99,6 +99,8 @@ class LoginV: UIView {
         
         if placeholder.lowercased() == "password" {
             tf.isSecureTextEntry = true
+        } else if placeholder.lowercased() == "email" {
+            tf.keyboardType = UIKeyboardType.emailAddress
         }
         
         return tf

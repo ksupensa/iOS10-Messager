@@ -12,7 +12,12 @@ import Firebase
 let DB_REF = FIRDatabase.database().reference()
 let STR_REF = FIRStorage.storage().reference()
 let AUTH_REF = FIRAuth.auth()
+let PROF_IMG_REF = STR_REF.child("profile-img")
 
 let USR = "users"
 let EMAIL = "email"
 let NAME = "name"
+let IMG_URL = "imgURL"
+
+let EMPTY_URL = "empty"
+let CAMERA_IMG = "camera"

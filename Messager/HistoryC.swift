@@ -24,11 +24,6 @@ class HistoryC: UITableViewController, RecentD {
         }
     }
     
-    func newMessage(){
-        let newMsg = UINavigationController(rootViewController: MessageC())
-        present(newMsg, animated: true, completion: nil)
-    }
-    
     func setCurrentUserName(_ uid: String) {
         DB_REF.child(USR).child(uid).observeSingleEvent(of: FIRDataEventType.value, with: {
             (snapshot: FIRDataSnapshot) in
@@ -40,20 +35,6 @@ class HistoryC: UITableViewController, RecentD {
                 Alert.message(self, title: "Login", message: errMsg, buttonTitle: "Ok")
             }
         })
-    }
-    
-    func logout(){
-        do {
-            try FIRAuth.auth()?.signOut()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-            Alert.message(self, title: "Logout Error", message: error.localizedDescription, buttonTitle: "Ok")
-        }
-        
-        let loginC = LoginC()
-        loginC.delegate = self
-        
-        present(loginC, animated: true, completion: nil)
     }
     
     func transferName(_ str: String?, completed: completion) {
