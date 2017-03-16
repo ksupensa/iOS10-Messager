@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 
 class LoginC: UIViewController {
+    weak var delegate: RecentD?
     
     private var lv = LoginV()
     private var login = true
@@ -88,8 +89,22 @@ class LoginC: UIViewController {
                 return
             }
             
-            self.lv.clearInputFields()
-            self.dismiss(animated: true, completion: nil)
+            let uid = (user)!.uid
+            var name: String?
+            
+            DB_REF.child(USR).child(uid).observeSingleEvent(of: FIRDataEventType.value, with: {
+                (snapshot: FIRDataSnapshot) in
+                
+                if let dict = snapshot.value as? [String:AnyObject] {
+                    name = dict[NAME] as? String
+                    // log into the App
+                    self.login(name)
+                } else {
+                    let errMsg = "Cannot reach database"
+                    print("spencer: \(errMsg)")
+                    Alert.message(self, title: "Login", message: errMsg, buttonTitle: "Ok")
+                }
+            })
         })
     }
     
@@ -105,9 +120,9 @@ class LoginC: UIViewController {
             
             // User got authenticated
             if let usr = user {
-                let values = ["name": name, "email" : email]
+                let values = [NAME: name, EMAIL: email]
                 
-                let userRef = DB_REF.child("users").child(usr.uid)
+                let userRef = DB_REF.child(USR).child(usr.uid)
                 userRef.updateChildValues(values, withCompletionBlock: {
                     (error, ref) in
                     if let err = error {
@@ -116,12 +131,19 @@ class LoginC: UIViewController {
                         return
                     }
                     
-                    // User got saved into DB
-                    print("spencer: User saved into DB")
-                    self.lv.clearInputFields()
-                    self.dismiss(animated: true, completion: nil)
+                    // log into the App
+                    self.login(name)
                 })
             }
+        })
+    }
+    
+    // Transfert Name back to previous delegate
+    func login(_ name: String?) {
+        delegate?.transferName(name, completed: {
+            // Dismiss this view
+            self.lv.clearInputFields()
+            self.dismiss(animated: true, completion: nil)
         })
     }
     

@@ -12,3 +12,7 @@ import Firebase
 let DB_REF = FIRDatabase.database().reference()
 let STR_REF = FIRStorage.storage().reference()
 let AUTH_REF = FIRAuth.auth()
+
+let USR = "users"
+let EMAIL = "email"
+let NAME = "name"
