@@ -19,5 +19,5 @@ let EMAIL = "email"
 let NAME = "name"
 let IMG_URL = "imgURL"
 
-let EMPTY_URL = "empty"
 let CAMERA_IMG = "camera"
+let ICON_SIZE: CGFloat = 56

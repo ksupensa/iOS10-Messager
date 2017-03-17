@@ -223,10 +223,11 @@ class LoginV: UIView {
         passwordHeightConstraint?.isActive = true
     }
     
-    func clearInputFields(){
+    func clearLoginUI(){
         nameTxtField.text = ""
         emailTxtField.text = ""
         passwordTxtField.text = ""
+        profileImgView.image = UIImage(named: CAMERA_IMG)
     }
 }
 

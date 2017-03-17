@@ -17,6 +17,7 @@ class LoginC: UIViewController {
     private var btn: UIButton!
     private var sc: UISegmentedControl!
     internal var img: UIImageView!
+    internal var hasDefaultImg: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +42,8 @@ class LoginC: UIViewController {
     // Transfert Name back to previous delegate
     func login(_ name: String?) {
         delegate?.transferName(name, completed: {
-            self.lv.clearInputFields()
+            self.lv.clearLoginUI()
+            self.hasDefaultImg = true
             self.dismiss(animated: true, completion: nil)
         })
     }

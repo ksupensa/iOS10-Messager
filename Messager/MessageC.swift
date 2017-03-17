@@ -42,6 +42,7 @@ class MessageC: UITableViewController {
             // No need for DispatchQueue.main.async
             // Firabase closure execute on main Queue
             self.tableView.reloadData()
+            print("spencer: Reload TableView")
         }
     }
     
@@ -53,15 +54,41 @@ class MessageC: UITableViewController {
         return users.count
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return ICON_SIZE + 10
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let user = users[indexPath.row]
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
         
         cell.textLabel?.text = user.name
         cell.detailTextLabel?.text = user.email
         
+        if let imgUrl = user.imgURL {
+            cell.profileImgView.loadImgFromCache(self, imgUrl: imgUrl)
+        }
+        
         return cell
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

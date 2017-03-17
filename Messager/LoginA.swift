@@ -47,6 +47,8 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
     // 2 functions needed for (UIImagePickerControllerDelegate and UINavigationControllerDelegate)
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
+        hasDefaultImg = false
+        
         if let imgEdited = info[UIImagePickerControllerEditedImage] as? UIImage{
             
             self.img.image = imgEdited
@@ -57,12 +59,15 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
             
         } else {
             print("spencer: Error during profile image selection")
+            hasDefaultImg = true
+            img.image = UIImage(named: CAMERA_IMG)
         }
         
         picker.dismiss(animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        hasDefaultImg = true
         img.image = UIImage(named: CAMERA_IMG)
         picker.dismiss(animated: true, completion: nil)
     }
@@ -132,48 +137,56 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
             // User got authenticated
             if let usr = user {
                 
-                // imgUrl for user in database
-                var url = EMPTY_URL
-                
-                if let img = self.img.image, let data = UIImageJPEGRepresentation(img, 0.2) {
-                    let metaData = FIRStorageMetadata()
-                    metaData.contentType = "image/jpeg"
-                    
-                    let imgId = UUID().uuidString
-                    
-                    PROF_IMG_REF.child(imgId).put(data, metadata: metaData) {
-                        (meta:FIRStorageMetadata?, strErr:Error?) in
-                        if let err = strErr {
-                            print(err.localizedDescription)
-                            Alert.message(self, title: "Error saving profile image", message: err.localizedDescription, buttonTitle: "Understood")
-                            return
-                        }
-                        
-                        // Get URL if existing
-                        if let du = meta?.downloadURL()?.absoluteString {
-                            url = du
-                        }
-                    }
-                }
-                
                 // Prepare values to set new User
-                let values = [NAME: name, EMAIL: email, IMG_URL: url]
+                var values: [String:String] = [NAME: name, EMAIL: email]
                 
-                // Set new User in Database
-                let userRef = DB_REF.child(USR).child(usr.uid)
-                userRef.updateChildValues(values, withCompletionBlock: {
-                    (error, ref) in
-                    
-                    if let err = error {
-                        print("spencer: Error saving user - \(err.localizedDescription)")
-                        Alert.message(self, title: "Error saving user", message: err.localizedDescription, buttonTitle: "Understood")
-                        return
+                print("spencer: Default Image - \(self.hasDefaultImg)")
+                
+                if !self.hasDefaultImg {
+                    if let img = self.img.image, let data = UIImageJPEGRepresentation(img, 0.2) {
+                        let metaData = FIRStorageMetadata()
+                        metaData.contentType = "image/jpeg"
+                        
+                        let imgId = UUID().uuidString
+                        
+                        PROF_IMG_REF.child(imgId).put(data, metadata: metaData) {
+                            (meta:FIRStorageMetadata?, strErr:Error?) in
+                            if let err = strErr {
+                                print(err.localizedDescription)
+                                Alert.message(self, title: "Error saving profile image", message: err.localizedDescription, buttonTitle: "Understood")
+                                return
+                            }
+                            
+                            // Get URL if existing
+                            if let url = meta?.downloadURL()?.absoluteString {
+                                // Prepare values to set new User
+                                values = [NAME: name, EMAIL: email, IMG_URL: url]
+                            }
+                            
+                            self.saveNewUserInDB(usr, values: values)
+                        }
                     }
-                    
-                    // log into the App
-                    self.login(name)
-                })
+                } else {
+                    self.saveNewUserInDB(usr, values: values)
+                }
             }
+        })
+    }
+    
+    private func saveNewUserInDB(_ usr: FIRUser, values: [String:String]) {
+        // Set new User in Database
+        let userRef = DB_REF.child(USR).child(usr.uid)
+        userRef.updateChildValues(values, withCompletionBlock: {
+            (error, ref) in
+            
+            if let err = error {
+                print("spencer: Error saving user - \(err.localizedDescription)")
+                Alert.message(self, title: "Error saving user", message: err.localizedDescription, buttonTitle: "Understood")
+                return
+            }
+            
+            // log into the App
+            self.login(values[NAME])
         })
     }
 }

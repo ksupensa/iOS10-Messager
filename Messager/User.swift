@@ -11,7 +11,7 @@ import UIKit
 class User: NSObject {
     private var _name: String!
     private var _email: String!
-    private var _imgURL: String!
+    private var _imgURL: String?
     private var _uid: String?
     
     var uid: String? {
