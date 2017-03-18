@@ -13,11 +13,22 @@ class MessageC: UITableViewController {
     
     private let cellId = "msgCell"
     private var users = [User]()
+    var currentUsrID: String!
+    
+    init(id: String) {
+        super.init(style: UITableViewStyle.plain)
+        currentUsrID = id
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+        navigationItem.title = "List of users"
         
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
     }
@@ -33,9 +44,16 @@ class MessageC: UITableViewController {
     func fetchUser(){
         DB_REF.child(USR).observe(.childAdded) {
             (snasphot:FIRDataSnapshot) in
+            
+            // We don't want to include the current user
+            if self.currentUsrID == snasphot.key {
+                return
+            }
+            
             if let dict = snasphot.value as? [String: AnyObject] {
                 let usr = User()
                 usr.setValuesForKeys(dict)
+                usr.uid = snasphot.key
                 self.users.append(usr)
             }
             
@@ -61,7 +79,6 @@ class MessageC: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let user = users[indexPath.row]
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
         
         cell.textLabel?.text = user.name
@@ -73,22 +90,13 @@ class MessageC: UITableViewController {
         
         return cell
     }
+    
+    var messageController: HistoryC!
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        dismiss(animated: true) {
+            let user = self.users[indexPath.row]
+            self.messageController?.showChatController(user)
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

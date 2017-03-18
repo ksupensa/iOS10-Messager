@@ -11,8 +11,24 @@ import Firebase
 
 extension HistoryC {
     func newMessage(){
-        let newMsg = UINavigationController(rootViewController: MessageC())
+        let messageC = MessageC(id: currentUsrID)
+        messageC.messageController = self
+        let newMsg = UINavigationController(rootViewController: messageC)
         present(newMsg, animated: true, completion: nil)
+    }
+    
+    func showChatController(_ usr: User) {
+        if usr.uid == currentUsrID! {
+            print("spencer: You cannot send message to yoruself")
+            Alert.message(self, title: "Self messaging", message: "You cannot send message to yourself", buttonTitle: "Got it!")
+        } else {
+            print("spencer: Loading chat log...")
+            navigationItem.title = nil
+            let chatLogC = ChatLogC(collectionViewLayout: UICollectionViewFlowLayout())
+            chatLogC.user = usr
+            chatLogC.senderID = currentUsrID
+            navigationController?.pushViewController(chatLogC, animated: true)
+        }
     }
     
     func logout(){

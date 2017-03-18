@@ -11,7 +11,7 @@ import UIKit
 class LoginC: UIViewController {
     weak var delegate: RecentD?
     
-    internal var login = true
+    internal var signIn = true
     internal var lv = LoginV()
     
     private var btn: UIButton!
@@ -40,9 +40,10 @@ class LoginC: UIViewController {
     }
     
     // Transfert Name back to previous delegate
-    func login(_ dictionary: [String:AnyObject]) {
+    func login(_ dictionary: [String:AnyObject], uid: String) {
         let user = User()
         user.setValuesForKeys(dictionary)
+        user.uid = uid
         
         delegate?.transferName(user, completed: {
             self.lv.clearLoginUI()

@@ -16,10 +16,10 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
         let index = sc.selectedSegmentIndex
         if let title = sc.titleForSegment(at:index ) {
             lv.registerLoginBtn.setTitle(title, for: UIControlState.normal)
-            login = index == 0
+            signIn = index == 0
             
             // Change layout of input fields
-            inputFieldsLayout(login)
+            inputFieldsLayout(signIn)
         }
     }
     
@@ -28,7 +28,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
             return
         }
         
-        if login{
+        if signIn{
             logUserIn(email, password: password)
         } else {
             createUser(email, password: password, name: name)
@@ -113,7 +113,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
                 if let dict = snapshot.value as? [String:AnyObject] {
                     
                     // log into the App
-                    self.login(dict)
+                    self.login(dict, uid: uid)
                 } else {
                     let errMsg = "Cannot reach database"
                     print("spencer: \(errMsg)")
@@ -185,7 +185,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
             }
             
             // log into the App
-            self.login(values)
+            self.login(values, uid: usr.uid)
         })
     }
 }
