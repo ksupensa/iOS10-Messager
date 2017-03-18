@@ -11,6 +11,8 @@ import Firebase
 
 class HistoryC: UITableViewController, RecentD {
     
+    var name: String!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -24,11 +26,22 @@ class HistoryC: UITableViewController, RecentD {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let n = name {
+            navigationItem.title = n
+        }
+    }
+    
     func setCurrentUserName(_ uid: String) {
         DB_REF.child(USR).child(uid).observeSingleEvent(of: FIRDataEventType.value, with: {
             (snapshot: FIRDataSnapshot) in
             if let dict = snapshot.value as? [String:AnyObject] {
-                self.navigationItem.title = dict[NAME] as? String
+                // Get the Current User
+                let user = User()
+                user.setValuesForKeys(dict)
+                
+                print("spencer: User downloaded")
+                self.setNavigationTitleBar(user)
             } else {
                 let errMsg = "Cannot reach database"
                 print("spencer: \(errMsg)")
@@ -37,9 +50,23 @@ class HistoryC: UITableViewController, RecentD {
         })
     }
     
-    func transferName(_ str: String?, completed: completion) {
-        print("spencer: Name Transfered")
-        navigationItem.title = str
+    func transferName(_ aUser: User, completed: completion) {
+        print("spencer: User Transfered")
+        setNavigationTitleBar(aUser)
         completed()
+    }
+    
+    private func setNavigationTitleBar(_ usr:User){
+        name = usr.name
+        navigationItem.title = name
+        let tap = UITapGestureRecognizer(target: self, action: #selector(showChatController))
+        self.view.addGestureRecognizer(tap)
+    }
+    
+    func showChatController() {
+        print("spencer: Loading chat log...")
+        navigationItem.title = nil
+        let chatLogC = ChatLogC(collectionViewLayout: UICollectionViewFlowLayout())
+        navigationController?.pushViewController(chatLogC, animated: true)
     }
 }

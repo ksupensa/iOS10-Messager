@@ -18,6 +18,7 @@ let USR = "users"
 let EMAIL = "email"
 let NAME = "name"
 let IMG_URL = "imgURL"
+let MESSAGE = "messages"
 
 let CAMERA_IMG = "camera"
 let ICON_SIZE: CGFloat = 56

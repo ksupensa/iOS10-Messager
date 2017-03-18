@@ -11,16 +11,21 @@ import UIKit
 let imageCache: NSCache<NSString, UIImage> = NSCache()
 
 extension UIImageView {
-    func loadImgFromCache(_ vc: UIViewController, imgUrl: String) {
+    func loadImgFromCache(_ vc: UIViewController, imgUrl: String?) {
+        // If no imgUrl, put default image then return
+        guard let _ = imgUrl else {
+            self.image = UIImage(named: CAMERA_IMG)
+            return
+        }
         
         // Get the image from Cache
-        if let cachedImg = imageCache.object(forKey: NSString(string: imgUrl)) {
+        if let cachedImg = imageCache.object(forKey: NSString(string: imgUrl!)) {
             self.image = cachedImg
             return
         }
         
         // Get the image from Network
-        if let url = URL(string: imgUrl) {
+        if let url = URL(string: imgUrl!) {
             URLSession.shared.dataTask(with: url) {
                 (dataByte: Data?, response: URLResponse?, error: Error?) in
                 if let err = error {
@@ -31,7 +36,7 @@ extension UIImageView {
                 if let data = dataByte {
                     DispatchQueue.main.async {
                         if let downloadedImg = UIImage(data: data) {
-                            imageCache.setObject(downloadedImg, forKey: NSString(string: imgUrl))
+                            imageCache.setObject(downloadedImg, forKey: NSString(string: imgUrl!))
                             self.image = downloadedImg
                         }
                     }

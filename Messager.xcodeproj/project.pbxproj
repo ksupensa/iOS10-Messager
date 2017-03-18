@@ -13,6 +13,8 @@
 		F71249DF1E7918180069F38A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71249DE1E7918180069F38A /* User.swift */; };
 		F73E9FA51E75821A00BE4199 /* LoginC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73E9FA41E75821A00BE4199 /* LoginC.swift */; };
 		F7404B471E76830B00F3262C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7404B461E76830B00F3262C /* GoogleService-Info.plist */; };
+		F746A9A11E7CCEDD008A03D6 /* ChatLogC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F746A9A01E7CCEDD008A03D6 /* ChatLogC.swift */; };
+		F746A9A31E7D006A008A03D6 /* SendV.swift in Sources */ = {isa = PBXBuildFile; fileRef = F746A9A21E7D006A008A03D6 /* SendV.swift */; };
 		F74FF3151E7A38C70007856E /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74FF3141E7A38C70007856E /* UserCell.swift */; };
 		F74FF3171E7A4A970007856E /* LoginA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74FF3161E7A4A970007856E /* LoginA.swift */; };
 		F74FF3191E7A4DA00007856E /* HistoryA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74FF3181E7A4DA00007856E /* HistoryA.swift */; };
@@ -35,6 +37,8 @@
 		F71249DE1E7918180069F38A /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		F73E9FA41E75821A00BE4199 /* LoginC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginC.swift; sourceTree = "<group>"; };
 		F7404B461E76830B00F3262C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F746A9A01E7CCEDD008A03D6 /* ChatLogC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogC.swift; sourceTree = "<group>"; };
+		F746A9A21E7D006A008A03D6 /* SendV.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendV.swift; sourceTree = "<group>"; };
 		F74FF3141E7A38C70007856E /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		F74FF3161E7A4A970007856E /* LoginA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginA.swift; sourceTree = "<group>"; };
 		F74FF3181E7A4DA00007856E /* HistoryA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryA.swift; sourceTree = "<group>"; };
@@ -148,6 +152,7 @@
 				F78794891E755C340059ED1D /* HistoryC.swift */,
 				F74FF3181E7A4DA00007856E /* HistoryA.swift */,
 				F71249DC1E78ECAC0069F38A /* MessageC.swift */,
+				F746A9A01E7CCEDD008A03D6 /* ChatLogC.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 			children = (
 				F799E5E01E763C1E00F45A73 /* LoginV.swift */,
 				F74FF3141E7A38C70007856E /* UserCell.swift */,
+				F746A9A21E7D006A008A03D6 /* SendV.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -293,6 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F746A9A31E7D006A008A03D6 /* SendV.swift in Sources */,
 				F78076D31E77A6A300378EE5 /* Alert.swift in Sources */,
 				F78076D11E768AA400378EE5 /* Constants.swift in Sources */,
 				F71249DB1E78D7D30069F38A /* RecentD.swift in Sources */,
@@ -305,6 +312,7 @@
 				F74FF3171E7A4A970007856E /* LoginA.swift in Sources */,
 				F75CFF001E7BC5B200F2FDD4 /* Caching.swift in Sources */,
 				F74FF3151E7A38C70007856E /* UserCell.swift in Sources */,
+				F746A9A11E7CCEDD008A03D6 /* ChatLogC.swift in Sources */,
 				F73E9FA51E75821A00BE4199 /* LoginC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

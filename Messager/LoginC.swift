@@ -40,8 +40,11 @@ class LoginC: UIViewController {
     }
     
     // Transfert Name back to previous delegate
-    func login(_ name: String?) {
-        delegate?.transferName(name, completed: {
+    func login(_ dictionary: [String:AnyObject]) {
+        let user = User()
+        user.setValuesForKeys(dictionary)
+        
+        delegate?.transferName(user, completed: {
             self.lv.clearLoginUI()
             self.hasDefaultImg = true
             self.dismiss(animated: true, completion: nil)

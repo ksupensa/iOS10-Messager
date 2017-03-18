@@ -106,15 +106,14 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
             }
             
             let uid = (user)!.uid
-            var name: String?
             
             DB_REF.child(USR).child(uid).observeSingleEvent(of: FIRDataEventType.value, with: {
                 (snapshot: FIRDataSnapshot) in
                 
                 if let dict = snapshot.value as? [String:AnyObject] {
-                    name = dict[NAME] as? String
+                    
                     // log into the App
-                    self.login(name)
+                    self.login(dict)
                 } else {
                     let errMsg = "Cannot reach database"
                     print("spencer: \(errMsg)")
@@ -138,7 +137,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
             if let usr = user {
                 
                 // Prepare values to set new User
-                var values: [String:String] = [NAME: name, EMAIL: email]
+                var values: [String:AnyObject] = [NAME: name as AnyObject, EMAIL: email as AnyObject]
                 
                 print("spencer: Default Image - \(self.hasDefaultImg)")
                 
@@ -160,7 +159,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
                             // Get URL if existing
                             if let url = meta?.downloadURL()?.absoluteString {
                                 // Prepare values to set new User
-                                values = [NAME: name, EMAIL: email, IMG_URL: url]
+                                values = [NAME: name as AnyObject, EMAIL: email as AnyObject, IMG_URL: url as AnyObject]
                             }
                             
                             self.saveNewUserInDB(usr, values: values)
@@ -173,7 +172,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
         })
     }
     
-    private func saveNewUserInDB(_ usr: FIRUser, values: [String:String]) {
+    private func saveNewUserInDB(_ usr: FIRUser, values: [String:AnyObject]) {
         // Set new User in Database
         let userRef = DB_REF.child(USR).child(usr.uid)
         userRef.updateChildValues(values, withCompletionBlock: {
@@ -186,7 +185,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
             }
             
             // log into the App
-            self.login(values[NAME])
+            self.login(values)
         })
     }
 }

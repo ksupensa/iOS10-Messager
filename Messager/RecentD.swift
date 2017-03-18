@@ -11,5 +11,5 @@ import Foundation
 typealias completion = ()->()
 
 protocol RecentD: class {
-    func transferName(_ str: String?, completed: completion)
+    func transferName(_ aUser: User, completed: completion)
 }
