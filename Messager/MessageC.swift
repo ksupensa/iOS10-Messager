@@ -85,7 +85,7 @@ class MessageC: UITableViewController {
         cell.detailTextLabel?.text = user.email
         
         if let imgUrl = user.imgURL {
-            cell.profileImgView.loadImgFromCache(self, imgUrl: imgUrl)
+            cell.profileImgView.loadImgFromCache(imgUrl: imgUrl)
         }
         
         return cell

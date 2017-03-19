@@ -14,11 +14,13 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate {
     // Represent the editable part
     let sendMessageV = SendV()
     var sentText: UITextField!
+    
     var senderID: String? {
         didSet{
              sendMessageV.sendBtn.isHidden = false
         }
     }
+    
     var user: User? {
         didSet{
             navigationItem.title = user?.name
@@ -41,6 +43,7 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate {
     func sendBtnPressed(){
         print("spencer: Sending message...")
         
+        // AutoId chronologically sorted
         let ref = DB_REF.child(MESSAGE).childByAutoId()
         let time = "\(NSDate().timeIntervalSince1970)"
         

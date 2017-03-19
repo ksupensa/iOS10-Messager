@@ -11,7 +11,7 @@ import UIKit
 let imageCache: NSCache<NSString, UIImage> = NSCache()
 
 extension UIImageView {
-    func loadImgFromCache(_ vc: UIViewController, imgUrl: String?) {
+    func loadImgFromCache(imgUrl: String?) {
         // If no imgUrl, put default image then return
         guard let _ = imgUrl else {
             self.image = UIImage(named: CAMERA_IMG)

@@ -14,7 +14,7 @@ class HistoryC: UITableViewController, RecentD {
     var currentName: String!
     var currentEmail: String!
     var currentUsrID: String!
-    var messages = [Message]()
+    
     private let cellId = "cellId"
     
     override func viewDidLoad() {
@@ -25,24 +25,53 @@ class HistoryC: UITableViewController, RecentD {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logout))
         
         if let uid = FIRAuth.auth()?.currentUser?.uid {
+            currentUsrID = uid
             setCurrentUserName(uid)
         } else {
             perform(#selector(logout), with: nil, afterDelay: 0)
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let n = currentName {
+            navigationItem.title = n
         }
         
         observeMessages()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        DB_REF.child(MESSAGE).removeAllObservers()
+        messages.removeAll()
+        messageDict.removeAll()
+        tableView.reloadData()
+    }
+    
+    var messages = [Message]()
+    var messageDict = [String:Message]()
+    
     private func observeMessages(){
         DB_REF.child(MESSAGE).observe(.childAdded, with: {
             (snapshot: FIRDataSnapshot) in
-            // TEST
-            if let dict = snapshot.value as? [String:AnyObject] {
-                let m = Message()
-                m.setValuesForKeys(dict)
-                print("spencer: Message - \(m.text)")
-                self.messages.append(m)
-                self.tableView.reloadData()
+            // Only show messages sent or received
+            if let dict = snapshot.value as? [String:String] {
+                if let sentID = dict[SENDER], let getID = dict[RECEIVER] {
+                    if self.currentUsrID! == sentID || self.currentUsrID == getID {
+                        let m = Message()
+                        m.setValuesForKeys(dict)
+                        
+                        let id = self.currentUsrID! == sentID ? getID : sentID
+                        print("spencer: id - \(id)")
+                        self.messageDict[id] = m
+                        self.messages = Array(self.messageDict.values)
+                        self.messages.sort(by: {
+                            (m1, m2) -> Bool in
+                            return Double(m1.timeStamp)! > Double(m2.timeStamp)!
+                        })
+                        
+                        self.tableView.reloadData()
+                    }
+                }
             }
         })
     }
@@ -52,19 +81,20 @@ class HistoryC: UITableViewController, RecentD {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: cellId) as? UserCell {
-            cell.textLabel?.text = messages[indexPath.row].receiver
-            cell.detailTextLabel?.text = messages[indexPath.row].text
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? UserCell {
+            let message = messages[indexPath.row]
+            
+            cell.currentUsrID = currentUsrID
+            cell.setupContent(message: message)
+            
             return cell
         }
         
-        return UITableViewCell()
+        return UserCell()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        if let n = currentName {
-            navigationItem.title = n
-        }
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return ICON_SIZE + 10
     }
     
     func setCurrentUserName(_ uid: String) {
@@ -96,8 +126,8 @@ class HistoryC: UITableViewController, RecentD {
         currentName = usr.name
         currentEmail = usr.email
         currentUsrID = usr.uid
-        navigationItem.title = currentName
         
+        navigationItem.title = currentName
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(newMessage))
     }
 }

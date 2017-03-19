@@ -39,6 +39,10 @@ extension HistoryC {
             Alert.message(self, title: "Logout Error", message: error.localizedDescription, buttonTitle: "Ok")
         }
         
+        currentName = nil
+        currentEmail = nil
+        currentUsrID = nil
+        
         let loginC = LoginC()
         loginC.delegate = self
         
