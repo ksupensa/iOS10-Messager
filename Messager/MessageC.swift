@@ -60,7 +60,6 @@ class MessageC: UITableViewController {
             // No need for DispatchQueue.main.async
             // Firabase closure execute on main Queue
             self.tableView.reloadData()
-            print("spencer: Reload TableView")
         }
     }
     

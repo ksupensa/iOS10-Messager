@@ -32,6 +32,14 @@ extension HistoryC {
     }
     
     func logout(){
+        if let loggedUserId = currentUsrID {
+            DB_REF.child(MESSAGE).child(USR_MSG).child(loggedUserId).removeAllObservers()
+            messages.removeAll()
+            messageDict.removeAll()
+            mUsers.removeAll()
+            tableView.reloadData()
+        }
+        
         do {
             try FIRAuth.auth()?.signOut()
         } catch let error as NSError {

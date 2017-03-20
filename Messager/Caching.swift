@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 let imageCache: NSCache<NSString, UIImage> = NSCache()
 
@@ -26,26 +27,33 @@ extension UIImageView {
         
         // Get the image from Network
         if let url = URL(string: imgUrl!) {
-            URLSession.shared.dataTask(with: url) {
-                (dataByte: Data?, response: URLResponse?, error: Error?) in
-                if let err = error {
-                    print("spencer: Downloading image error - \(err.localizedDescription)")
-                    return
-                }
-
-                if let data = dataByte {
-                    DispatchQueue.main.async {
-                        if let downloadedImg = UIImage(data: data) {
-                            imageCache.setObject(downloadedImg, forKey: NSString(string: imgUrl!))
-                            self.image = downloadedImg
-                        }
-                    }
-                } else {
-                    print("spencer: Downloading image error - Invalid data")
-                }
-            }.resume()
+            firebaseDownload(url: url)
         } else {
             print("spencer: Illegal imgURL format")
         }
+    }
+    
+    func firebaseDownload(url: URL){
+        // Download image from Firebase
+        let ref = FIRStorage.storage().reference(forURL: url.absoluteString)
+        ref.data(withMaxSize: 2 * 1024 * 1024, completion: {
+            data, error in
+            
+            if error == nil {
+                if let imgData = data {
+                    
+                    if let downloadedImg = UIImage(data: imgData) {
+                        DispatchQueue.main.async {
+                            // Update image
+                            self.image = downloadedImg
+                            // Put image in cache
+                            imageCache.setObject(downloadedImg, forKey: NSString(string: url.absoluteString))
+                        }
+                    }
+                }
+            } else {
+                print("spencer: Failed to Download image from Firebase Storage")
+            }
+        })
     }
 }

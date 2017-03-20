@@ -23,6 +23,7 @@ let TEXT = "text"
 let SENDER = "sender"
 let RECEIVER = "receiver"
 let TIME = "timeStamp"
+let USR_MSG = "user-messages"
 
 let CAMERA_IMG = "camera"
 let ICON_SIZE: CGFloat = 56

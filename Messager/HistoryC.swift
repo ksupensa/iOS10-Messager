@@ -27,6 +27,7 @@ class HistoryC: UITableViewController, RecentD {
         if let uid = FIRAuth.auth()?.currentUser?.uid {
             currentUsrID = uid
             setCurrentUserName(uid)
+            observeUserMessages()
         } else {
             perform(#selector(logout), with: nil, afterDelay: 0)
         }
@@ -36,32 +37,31 @@ class HistoryC: UITableViewController, RecentD {
         if let n = currentName {
             navigationItem.title = n
         }
-        
-        observeMessages()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        DB_REF.child(MESSAGE).removeAllObservers()
-        messages.removeAll()
-        messageDict.removeAll()
-        tableView.reloadData()
     }
     
     var messages = [Message]()
+    var mUsers = [String:User]()
     var messageDict = [String:Message]()
     
-    private func observeMessages(){
-        DB_REF.child(MESSAGE).observe(.childAdded, with: {
-            (snapshot: FIRDataSnapshot) in
-            // Only show messages sent or received
-            if let dict = snapshot.value as? [String:String] {
-                if let sentID = dict[SENDER], let getID = dict[RECEIVER] {
-                    if self.currentUsrID! == sentID || self.currentUsrID == getID {
+    private func observeUserMessages(){
+        let ref =  DB_REF.child(MESSAGE).child(USR_MSG).child(currentUsrID)
+        ref.observe(.childAdded) {
+            (snap:FIRDataSnapshot) in
+            
+            let msgId = snap.key
+            let msgsRef = DB_REF.child(MESSAGE).child(msgId)
+            
+            msgsRef.observeSingleEvent(of: FIRDataEventType.value, with: {
+                (snapshot:FIRDataSnapshot) in
+                // Only show messages sent or received
+                if let dict = snapshot.value as? [String:String] {
+                    if let sentID = dict[SENDER], let getID = dict[RECEIVER] {
                         let m = Message()
                         m.setValuesForKeys(dict)
                         
+                        // Other user that sent or received the message sent
                         let id = self.currentUsrID! == sentID ? getID : sentID
-                        print("spencer: id - \(id)")
+
                         self.messageDict[id] = m
                         self.messages = Array(self.messageDict.values)
                         self.messages.sort(by: {
@@ -69,23 +69,60 @@ class HistoryC: UITableViewController, RecentD {
                             return Double(m1.timeStamp)! > Double(m2.timeStamp)!
                         })
                         
-                        self.tableView.reloadData()
+                        // Add User if not already in dictionary
+                        if self.mUsers[id] == nil {
+                            DB_REF.child(USR).child(id).observeSingleEvent(of: FIRDataEventType.value, with: {
+                                (snap:FIRDataSnapshot) in
+                                
+                                if let dict = snap.value as? [String:String] {
+                                    let user = User()
+                                    user.setValuesForKeys(dict)
+                                    user.uid = snap.key
+                                    self.mUsers[id] = user
+                                    
+                                    self.tableView.reloadData()
+                                }
+                            })
+                        } else {
+                            self.tableView.reloadData()
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }
     
+    override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? UserCell {
+            cell.timeLabel.text = nil
+            cell.textLabel?.text = nil
+            cell.detailTextLabel?.text = nil
+            cell.profileImgView.image = nil
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? UserCell {
-            let message = messages[indexPath.row]
             
-            cell.currentUsrID = currentUsrID
-            cell.setupContent(message: message)
+            let message = self.messages[indexPath.row]
+            let id = self.currentUsrID! == message.sender ? message.receiver : message.sender
+            
+            if let mUser = self.mUsers[id] {
+                cell.textLabel?.text = mUser.name
+                cell.detailTextLabel?.text = message.text
+                if let time = Double(message.timeStamp) {
+                    let stamp = Date(timeIntervalSince1970: time)
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "HH:mm:ss"
+                    cell.timeLabel.text = dateFormatter.string(from: stamp)
+                }
+                // Update Image
+                cell.profileImgView.loadImgFromCache(imgUrl: mUser.imgURL)
+            }
             
             return cell
         }
@@ -119,6 +156,7 @@ class HistoryC: UITableViewController, RecentD {
     func transferName(_ aUser: User, completed: completion) {
         print("spencer: User Transfered")
         setNavigationTitleBar(aUser)
+        observeUserMessages()
         completed()
     }
     

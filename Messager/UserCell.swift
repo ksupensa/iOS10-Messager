@@ -26,7 +26,7 @@ class UserCell: UITableViewCell {
     let timeLabel: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "HH:MM:SS"
+//        label.text = "HH:MM:SS"
         label.font = UIFont(name: "Avenir", size: 12)
         label.textColor = UIColor.gray
         return label
@@ -48,10 +48,8 @@ class UserCell: UITableViewCell {
         
         timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive = true
         timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 19).isActive = true
-        timeLabel.leftAnchor.constraint(equalTo: (textLabel?.leftAnchor)!).isActive = true
+        timeLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
         timeLabel.heightAnchor.constraint(equalTo: (textLabel?.heightAnchor)!).isActive = true
-        
-        timeLabel.isHidden = true
     }
     
     override func layoutSubviews() {
@@ -71,41 +69,6 @@ class UserCell: UITableViewCell {
         originalHeight = (detailTextLabel?.frame.height)!
         
         detailTextLabel?.frame = CGRect(x: xPosition, y: originalY, width: originalWidth, height: originalHeight)
-    }
-    
-    func setupContent(message: Message){
-        let receiverId = message.receiver
-        let senderId = message.sender
-        
-        // Download data of message sent and received
-        let id = senderId == currentUsrID ? receiverId : senderId
-        
-        DB_REF.child(USR).child(id).observeSingleEvent(of: FIRDataEventType.value, with: { (snap:FIRDataSnapshot) in
-            if let dict = snap.value as? [String:String] {
-                self.textLabel?.text = dict[NAME]
-                
-                if let imgUrl = dict[IMG_URL] {
-                    self.profileImgView.loadImgFromCache(imgUrl: imgUrl)
-                }
-            }
-        })
-        
-        self.detailTextLabel?.text = message.text
-        if let time = Double(message.timeStamp) {
-            let stamp = Date(timeIntervalSince1970: time)
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "HH:mm:ss"
-            self.timeLabel.text = dateFormatter.string(from: stamp)
-        }
-        
-        timeLabel.isHidden = false
-    }
-    
-    override func prepareForReuse() {
-        profileImgView.image = UIImage(named: CAMERA_IMG)
-        detailTextLabel?.text = ""
-        textLabel?.text = ""
-        timeLabel.text = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
