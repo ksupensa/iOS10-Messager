@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AAFCE4D8FF717F93DC598AF1 /* Pods_Messager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B71D973F2452D8AA3445AEC8 /* Pods_Messager.framework */; };
+		F70B89F31E80E26D0033F31B /* ChatLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70B89F21E80E26D0033F31B /* ChatLogCell.swift */; };
 		F71249DB1E78D7D30069F38A /* RecentD.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71249DA1E78D7D30069F38A /* RecentD.swift */; };
 		F71249DD1E78ECAC0069F38A /* MessageC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71249DC1E78ECAC0069F38A /* MessageC.swift */; };
 		F71249DF1E7918180069F38A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71249DE1E7918180069F38A /* User.swift */; };
@@ -33,6 +34,7 @@
 		0DC551FCBC14061CAE61250B /* Pods-Messager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Messager/Pods-Messager.debug.xcconfig"; sourceTree = "<group>"; };
 		B71D973F2452D8AA3445AEC8 /* Pods_Messager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E897F0E5D55AB58F38907DCA /* Pods-Messager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messager.release.xcconfig"; path = "Pods/Target Support Files/Pods-Messager/Pods-Messager.release.xcconfig"; sourceTree = "<group>"; };
+		F70B89F21E80E26D0033F31B /* ChatLogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogCell.swift; sourceTree = "<group>"; };
 		F71249DA1E78D7D30069F38A /* RecentD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentD.swift; sourceTree = "<group>"; };
 		F71249DC1E78ECAC0069F38A /* MessageC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageC.swift; sourceTree = "<group>"; };
 		F71249DE1E7918180069F38A /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 				F799E5E01E763C1E00F45A73 /* LoginV.swift */,
 				F74FF3141E7A38C70007856E /* UserCell.swift */,
 				F746A9A21E7D006A008A03D6 /* SendV.swift */,
+				F70B89F21E80E26D0033F31B /* ChatLogCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -318,6 +321,7 @@
 				F746A9A51E7D56D3008A03D6 /* Message.swift in Sources */,
 				F746A9A11E7CCEDD008A03D6 /* ChatLogC.swift in Sources */,
 				F73E9FA51E75821A00BE4199 /* LoginC.swift in Sources */,
+				F70B89F31E80E26D0033F31B /* ChatLogCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

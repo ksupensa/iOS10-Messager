@@ -9,23 +9,62 @@
 import UIKit
 import Firebase
 
-class ChatLogC: UICollectionViewController, UITextFieldDelegate {
+class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
     
-    // Represent the editable part
+    // Represent the input Field part
     let sendMessageV = SendV()
     var sentText: UITextField!
+
+    let cellId = "cellId"
     
-    var senderID: String?
+    var userId: String?
     
-    var user: User? {
+    var contact: User? {
         didSet{
-            navigationItem.title = user?.name
+            navigationItem.title = contact?.name
+            observeMsg()
+        }
+    }
+    
+    var messages = [Message]()
+    
+    private func observeMsg() {
+        let ref  = DB_REF.child(USR_MSG).child(userId!)
+        ref.observe(.childAdded) {
+            (snap:FIRDataSnapshot) in
+            
+            let msgId = snap.key
+            
+            DB_REF.child(MESSAGE).child(msgId).observeSingleEvent(of: .value, with: {
+                (snap2:FIRDataSnapshot) in
+                
+                if let dict = snap2.value as? [String:String] {
+                    let sendId = dict[SENDER]!
+                    let receiveId = dict[RECEIVER]!
+                    
+                    guard sendId == self.contact?.uid || receiveId == self.contact?.uid else {
+                        return
+                    }
+                    
+                    let msg = Message()
+                    msg.setValuesForKeys(dict)
+                    self.messages.append(msg)
+                    print(msg.text)
+                    
+                    DispatchQueue.main.async {
+                        self.collectionView?.reloadData()
+                    }
+                }
+            })
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = UIColor.white
+        collectionView?.register(ChatLogCell.self, forCellWithReuseIdentifier: cellId)
         
         sendMessageV.textField.delegate = self
         sentText = sendMessageV.textField
@@ -35,6 +74,32 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate {
         sendMessageV.sendBtn.addTarget(self, action: #selector(sendBtnPressed), for: UIControlEvents.touchUpInside)
     }
     
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogCell
+        
+        let msg = messages[indexPath.row]
+        
+        // Need to differenciate logged user from contact
+        let isUser = msg.sender == userId
+        cell.setText(msg.text, isUser: isUser)
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let msg = NSString(string: messages[indexPath.row].text)
+        let size =  msg.size(attributes: [NSFontAttributeName: FONT!])
+        let height: CGFloat = size.height + MSG_PADDING
+        
+        // Estimated height
+        return CGSize(width: view.frame.width, height: height)
+    }
+    
     func sendBtnPressed(){
         print("spencer: Sending message...")
         
@@ -42,7 +107,7 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate {
         let ref = DB_REF.child(MESSAGE).childByAutoId()
         let time = "\(NSDate().timeIntervalSince1970)"
         
-        if let text = sentText.text, let receiverId = user?.uid, let senderId = senderID {
+        if let text = sentText.text, let receiverId = contact?.uid, let senderId = userId {
             let values = [TEXT: text, RECEIVER: receiverId, SENDER: senderId, TIME: time] as [String : Any]
             ref.updateChildValues(values) {
                 (error:Error?, reference:FIRDatabaseReference) in
@@ -53,12 +118,12 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate {
                 }
                 
                 // Update "user-messages" for sender first...
-                var usrMsgRef = DB_REF.child(MESSAGE).child(USR_MSG).child(senderId)
+                var usrMsgRef = DB_REF.child(USR_MSG).child(senderId)
                 let messageId = ref.key
                 usrMsgRef.updateChildValues([messageId:1])
                 
                 // ...Then update "user-messages" for receiver
-                usrMsgRef = DB_REF.child(MESSAGE).child(USR_MSG).child(receiverId)
+                usrMsgRef = DB_REF.child(USR_MSG).child(receiverId)
                 usrMsgRef.updateChildValues([messageId:1])
             }
             

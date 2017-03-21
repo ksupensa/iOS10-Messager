@@ -27,7 +27,7 @@ class HistoryC: UITableViewController, RecentD {
         if let uid = FIRAuth.auth()?.currentUser?.uid {
             currentUsrID = uid
             setCurrentUserName(uid)
-            observeUserMessages()
+            observeUsrMsg()
         } else {
             perform(#selector(logout), with: nil, afterDelay: 0)
         }
@@ -43,8 +43,8 @@ class HistoryC: UITableViewController, RecentD {
     var mUsers = [String:User]()
     var messageDict = [String:Message]()
     
-    private func observeUserMessages(){
-        let ref =  DB_REF.child(MESSAGE).child(USR_MSG).child(currentUsrID)
+    private func observeUsrMsg(){
+        let ref =  DB_REF.child(USR_MSG).child(currentUsrID)
         ref.observe(.childAdded) {
             (snap:FIRDataSnapshot) in
             
@@ -92,17 +92,17 @@ class HistoryC: UITableViewController, RecentD {
         }
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages.count
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let message = self.messages[indexPath.row]
+        let id = self.currentUsrID! == message.sender ? message.receiver : message.sender
+        
+        if let userWritingTo = mUsers[id]{
+            showChatController(userWritingTo)
+        }
     }
     
-    override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? UserCell {
-            cell.timeLabel.text = nil
-            cell.textLabel?.text = nil
-            cell.detailTextLabel?.text = nil
-            cell.profileImgView.image = nil
-        }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -156,7 +156,7 @@ class HistoryC: UITableViewController, RecentD {
     func transferName(_ aUser: User, completed: completion) {
         print("spencer: User Transfered")
         setNavigationTitleBar(aUser)
-        observeUserMessages()
+        observeUsrMsg()
         completed()
     }
     

@@ -27,3 +27,5 @@ let USR_MSG = "user-messages"
 
 let CAMERA_IMG = "camera"
 let ICON_SIZE: CGFloat = 56
+let MSG_PADDING: CGFloat = 16
+let FONT = UIFont(name: "Avenir", size: 15)

@@ -52,7 +52,7 @@ extension UIImageView {
                     }
                 }
             } else {
-                print("spencer: Failed to Download image from Firebase Storage")
+                print("spencer: Failed to Download image - \(error?.localizedDescription)")
             }
         })
     }

@@ -17,6 +17,8 @@ class SendV: UIView {
     
     func setupInputViews(_ view: UIView) {
         
+        containerV.backgroundColor = UIColor.white
+        
         containerV.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(containerV)
@@ -25,7 +27,6 @@ class SendV: UIView {
         containerV.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         containerV.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         containerV.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
         
         sendBtn.setTitle("Send", for: .normal)
         sendBtn.translatesAutoresizingMaskIntoConstraints = false

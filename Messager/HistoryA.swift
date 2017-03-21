@@ -25,15 +25,17 @@ extension HistoryC {
             print("spencer: Loading chat log...")
             navigationItem.title = nil
             let chatLogC = ChatLogC(collectionViewLayout: UICollectionViewFlowLayout())
-            chatLogC.user = usr
-            chatLogC.senderID = currentUsrID
+            // senderID first then user or it will crash
+            chatLogC.userId = currentUsrID
+            chatLogC.contact = usr
             navigationController?.pushViewController(chatLogC, animated: true)
         }
     }
     
     func logout(){
         if let loggedUserId = currentUsrID {
-            DB_REF.child(MESSAGE).child(USR_MSG).child(loggedUserId).removeAllObservers()
+            DB_REF.child(USR_MSG).child(loggedUserId).removeAllObservers()
+            DB_REF.child(MESSAGE).removeAllObservers()
             messages.removeAll()
             messageDict.removeAll()
             mUsers.removeAll()
