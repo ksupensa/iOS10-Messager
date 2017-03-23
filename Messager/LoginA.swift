@@ -124,7 +124,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
     }
     
     private func createUser(_ email: String, password: String, name: String) {
-        AUTH_REF?.createUser(withEmail: email, password: password, completion: {
+        FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: {
             (user: FIRUser?, error: Error?) in
             
             if let err = error {
@@ -148,7 +148,7 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
                         
                         let imgId = UUID().uuidString
                         
-                        PROF_IMG_REF.child(imgId).put(data, metadata: metaData) {
+                        FIRStorage.storage().reference().child("profile-img").child(imgId).put(data, metadata: metaData) {
                             (meta:FIRStorageMetadata?, strErr:Error?) in
                             if let err = strErr {
                                 print(err.localizedDescription)

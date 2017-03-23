@@ -8,11 +8,9 @@
 
 import Foundation
 import Firebase
+import Darwin
 
 let DB_REF = FIRDatabase.database().reference()
-let STR_REF = FIRStorage.storage().reference()
-let AUTH_REF = FIRAuth.auth()
-let PROF_IMG_REF = STR_REF.child("profile-img")
 
 let USR = "users"
 let EMAIL = "email"
@@ -27,5 +25,10 @@ let USR_MSG = "user-messages"
 
 let CAMERA_IMG = "camera"
 let ICON_SIZE: CGFloat = 56
-let MSG_PADDING: CGFloat = 16
-let FONT = UIFont(name: "Avenir", size: 15)
+
+let FONT_NAME = "Avenir"
+let FONT_SIZE: CGFloat = 15
+
+let SENDV_HEIGHT: CGFloat = 50
+
+let MAX_FLOAT = FLT_MAX

@@ -44,7 +44,7 @@ class LoginV: UIView {
         button.layer.masksToBounds = true
         // Font + Color
         button.setTitleColor(UIColor.white, for: UIControlState.normal)
-        button.titleLabel?.font = UIFont(name: "Avenir", size: 16)
+        button.titleLabel?.font = UIFont(name: FONT_NAME, size: FONT_SIZE)
         return button
     }()
     

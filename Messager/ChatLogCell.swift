@@ -14,19 +14,18 @@ class ChatLogCell: UICollectionViewCell {
         let tv = UITextView()
         tv.backgroundColor = UIColor.clear
         tv.translatesAutoresizingMaskIntoConstraints = false
-        tv.font = FONT
         tv.textAlignment = NSTextAlignment.center
-        tv.isScrollEnabled = false
         tv.isEditable = false
         tv.isSelectable = false
         tv.isUserInteractionEnabled = true
+        tv.isScrollEnabled = false
         return tv
     }()
     
     let  bubbleV: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 15
+        view.layer.cornerRadius = 18
         return view
     }()
     
@@ -40,7 +39,10 @@ class ChatLogCell: UICollectionViewCell {
         txtV.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         
         // Anchors: x, y, width, height
-        bubbleV.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        bubbleV.topAnchor.constraint(equalTo: txtV.topAnchor).isActive = true
+        bubbleV.leftAnchor.constraint(equalTo: txtV.leftAnchor).isActive = true
+        bubbleV.rightAnchor.constraint(equalTo: txtV.rightAnchor).isActive = true
+        bubbleV.bottomAnchor.constraint(equalTo: txtV.bottomAnchor).isActive = true
     }
     
     var textW: NSLayoutConstraint!
@@ -50,20 +52,21 @@ class ChatLogCell: UICollectionViewCell {
     var bubbleH: NSLayoutConstraint!
     var bubbleRL: NSLayoutConstraint!
     
-    func setText(_ txt: String?, isUser: Bool) {
-        txtV.text = txt
+    func setText(_ txt: String, isUser: Bool) {
         
-        // Compute the size of txt
-        let text = NSString(string: txt!)
-        let size = text.size(attributes: [NSFontAttributeName: FONT!])
-        let h = size.height + MSG_PADDING
-        let w = size.width + MSG_PADDING
+        let cellsize = CellSize.getCellSizeToFitText(txt, maxWidth: self.frame.width * 0.6)
+        txtV.attributedText = cellsize.attributedString
+        
+        // Give size of the Cell
+        let size = cellsize.size!
+        let w = size.width
+        let h = size.height
         
         // Update textView size et position
-        if let tw = textW, let th = textH, let tr = textRL {
+        if let tw = textW, let th = textH, let trl = textRL {
             tw.isActive = false
             th.isActive = false
-            tr.isActive = false
+            trl.isActive = false
         }
         
         textW = txtV.widthAnchor.constraint(equalToConstant: w)
@@ -71,33 +74,17 @@ class ChatLogCell: UICollectionViewCell {
         textH = txtV.heightAnchor.constraint(equalToConstant: h)
         textH.isActive = true
         
-        // Update bubbleView size et position
-        if let bw = bubbleW, let bh = bubbleH, let br = bubbleRL {
-            bw.isActive = false
-            bh.isActive = false
-            br.isActive = false
-        }
-        
-        bubbleW = bubbleV.widthAnchor.constraint(equalToConstant: w)
-        bubbleW.isActive = true
-        bubbleH = bubbleV.heightAnchor.constraint(equalToConstant: h)
-        bubbleH.isActive = true
-        
         let padding:CGFloat = 10
         
         // Side of Text and Bubble depends on Contact and User
         if isUser {
             textRL = txtV.rightAnchor.constraint(equalTo: self.rightAnchor , constant: -padding)
             textRL.isActive = true
-            bubbleRL = bubbleV.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -padding)
-            bubbleRL.isActive = true
             bubbleV.backgroundColor = UIColor(r: 0, g: 137, b: 249)
             txtV.textColor = UIColor.white
         } else {
             textRL = txtV.leftAnchor.constraint(equalTo: self.leftAnchor, constant: padding)
             textRL.isActive = true
-            bubbleRL = bubbleV.leftAnchor.constraint(equalTo: self.leftAnchor, constant: padding)
-            bubbleRL.isActive = true
             bubbleV.backgroundColor = UIColor(r: 230, g: 230, b: 230)
             txtV.textColor = UIColor.black
         }

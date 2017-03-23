@@ -20,6 +20,7 @@
 		F74FF3151E7A38C70007856E /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74FF3141E7A38C70007856E /* UserCell.swift */; };
 		F74FF3171E7A4A970007856E /* LoginA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74FF3161E7A4A970007856E /* LoginA.swift */; };
 		F74FF3191E7A4DA00007856E /* HistoryA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74FF3181E7A4DA00007856E /* HistoryA.swift */; };
+		F7765EE11E82B91600E5E8AC /* CellSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7765EE01E82B91600E5E8AC /* CellSize.swift */; };
 		F78076D11E768AA400378EE5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78076D01E768AA400378EE5 /* Constants.swift */; };
 		F78076D31E77A6A300378EE5 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78076D21E77A6A300378EE5 /* Alert.swift */; };
 		F78794881E755C340059ED1D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78794871E755C340059ED1D /* AppDelegate.swift */; };
@@ -46,6 +47,7 @@
 		F74FF3141E7A38C70007856E /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		F74FF3161E7A4A970007856E /* LoginA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginA.swift; sourceTree = "<group>"; };
 		F74FF3181E7A4DA00007856E /* HistoryA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryA.swift; sourceTree = "<group>"; };
+		F7765EE01E82B91600E5E8AC /* CellSize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellSize.swift; sourceTree = "<group>"; };
 		F78076D01E768AA400378EE5 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F78076D21E77A6A300378EE5 /* Alert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		F78794841E755C340059ED1D /* Messager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Messager.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +103,7 @@
 				F78076D01E768AA400378EE5 /* Constants.swift */,
 				F78076D21E77A6A300378EE5 /* Alert.swift */,
 				F7C9B6B61E7FE2C100FBA437 /* Caching.swift */,
+				F7765EE01E82B91600E5E8AC /* CellSize.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				F71249DF1E7918180069F38A /* User.swift in Sources */,
 				F799E5E11E763C1E00F45A73 /* LoginV.swift in Sources */,
 				F71249DD1E78ECAC0069F38A /* MessageC.swift in Sources */,
+				F7765EE11E82B91600E5E8AC /* CellSize.swift in Sources */,
 				F74FF3171E7A4A970007856E /* LoginA.swift in Sources */,
 				F74FF3151E7A38C70007856E /* UserCell.swift in Sources */,
 				F746A9A51E7D56D3008A03D6 /* Message.swift in Sources */,

@@ -26,7 +26,7 @@ class SendV: UIView {
         containerV.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         containerV.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         containerV.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        containerV.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        containerV.heightAnchor.constraint(equalToConstant: SENDV_HEIGHT).isActive = true
         
         sendBtn.setTitle("Send", for: .normal)
         sendBtn.translatesAutoresizingMaskIntoConstraints = false

@@ -49,10 +49,14 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
                     let msg = Message()
                     msg.setValuesForKeys(dict)
                     self.messages.append(msg)
-                    print(msg.text)
                     
                     DispatchQueue.main.async {
                         self.collectionView?.reloadData()
+                        
+                        // Get the bottom part of UICollectionView
+                        let lastItem = self.messages.count - 1
+                        let lastItemIndex = IndexPath(item: lastItem, section: 0)
+                        self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: false)
                     }
                 }
             })
@@ -66,12 +70,21 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(ChatLogCell.self, forCellWithReuseIdentifier: cellId)
         
+        // Put collectionView above sendMessageV
+        let inset = SENDV_HEIGHT + 10
+        collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: inset, right: 0)
+        
         sendMessageV.textField.delegate = self
         sentText = sendMessageV.textField
         
         sendMessageV.setupInputViews(self.view)
         
         sendMessageV.sendBtn.addTarget(self, action: #selector(sendBtnPressed), for: UIControlEvents.touchUpInside)
+    }
+    
+    private func setupCollectionView() {
+        collectionView?.translatesAutoresizingMaskIntoConstraints = false
+        collectionView?.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -92,12 +105,13 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let msg = NSString(string: messages[indexPath.row].text)
-        let size =  msg.size(attributes: [NSFontAttributeName: FONT!])
-        let height: CGFloat = size.height + MSG_PADDING
+        let cellWidth = view.frame.width
+        let txt = messages[indexPath.row].text
         
-        // Estimated height
-        return CGSize(width: view.frame.width, height: height)
+        let size = CellSize.getCellSizeToFitText(txt, maxWidth: cellWidth * 0.6).size!
+        
+        // Give size of the Cell
+        return CGSize(width: cellWidth, height: size.height)
     }
     
     func sendBtnPressed(){
