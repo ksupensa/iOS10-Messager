@@ -15,7 +15,10 @@ class SendV: UIView {
     let textField = UITextField()
     let separator = UIView()
     
-    func setupInputViews(_ view: UIView) {
+    var bottomConstraint = NSLayoutConstraint()
+    
+    func setupInputViews(_ view: UIView = UIView(), size: CGRect) {
+        self.frame = size
         
         containerV.backgroundColor = UIColor.white
         
@@ -23,10 +26,10 @@ class SendV: UIView {
         
         view.addSubview(containerV)
         
-        containerV.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         containerV.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        containerV.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         containerV.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        containerV.heightAnchor.constraint(equalToConstant: SENDV_HEIGHT).isActive = true
+        containerV.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         
         sendBtn.setTitle("Send", for: .normal)
         sendBtn.translatesAutoresizingMaskIntoConstraints = false

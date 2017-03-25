@@ -12,6 +12,7 @@
 		F71249DB1E78D7D30069F38A /* RecentD.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71249DA1E78D7D30069F38A /* RecentD.swift */; };
 		F71249DD1E78ECAC0069F38A /* MessageC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71249DC1E78ECAC0069F38A /* MessageC.swift */; };
 		F71249DF1E7918180069F38A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71249DE1E7918180069F38A /* User.swift */; };
+		F73D18F01E84BEDC00960AC4 /* ChatLogA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D18EF1E84BEDC00960AC4 /* ChatLogA.swift */; };
 		F73E9FA51E75821A00BE4199 /* LoginC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73E9FA41E75821A00BE4199 /* LoginC.swift */; };
 		F7404B471E76830B00F3262C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7404B461E76830B00F3262C /* GoogleService-Info.plist */; };
 		F746A9A11E7CCEDD008A03D6 /* ChatLogC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F746A9A01E7CCEDD008A03D6 /* ChatLogC.swift */; };
@@ -39,6 +40,7 @@
 		F71249DA1E78D7D30069F38A /* RecentD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentD.swift; sourceTree = "<group>"; };
 		F71249DC1E78ECAC0069F38A /* MessageC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageC.swift; sourceTree = "<group>"; };
 		F71249DE1E7918180069F38A /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		F73D18EF1E84BEDC00960AC4 /* ChatLogA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogA.swift; sourceTree = "<group>"; };
 		F73E9FA41E75821A00BE4199 /* LoginC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginC.swift; sourceTree = "<group>"; };
 		F7404B461E76830B00F3262C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F746A9A01E7CCEDD008A03D6 /* ChatLogC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogC.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				F74FF3181E7A4DA00007856E /* HistoryA.swift */,
 				F71249DC1E78ECAC0069F38A /* MessageC.swift */,
 				F746A9A01E7CCEDD008A03D6 /* ChatLogC.swift */,
+				F73D18EF1E84BEDC00960AC4 /* ChatLogA.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				F799E5E11E763C1E00F45A73 /* LoginV.swift in Sources */,
 				F71249DD1E78ECAC0069F38A /* MessageC.swift in Sources */,
 				F7765EE11E82B91600E5E8AC /* CellSize.swift in Sources */,
+				F73D18F01E84BEDC00960AC4 /* ChatLogA.swift in Sources */,
 				F74FF3171E7A4A970007856E /* LoginA.swift in Sources */,
 				F74FF3151E7A38C70007856E /* UserCell.swift in Sources */,
 				F746A9A51E7D56D3008A03D6 /* Message.swift in Sources */,

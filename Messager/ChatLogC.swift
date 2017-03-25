@@ -12,11 +12,17 @@ import Firebase
 class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
     
     // Represent the input Field part
-    let sendMessageV = SendV()
-    var sentText: UITextField!
+    var sendMessageV: SendV =  {
+        let tempView = SendV()
+        tempView.sendBtn.addTarget(self, action: #selector(sendBtnPressed), for: UIControlEvents.touchUpInside)
+        
+        tempView.backgroundColor = UIColor.yellow
+        
+        return tempView
+    }()
 
+    weak var sentText: UITextField!
     let cellId = "cellId"
-    
     var userId: String?
     
     var contact: User? {
@@ -27,6 +33,53 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
     }
     
     var messages = [Message]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        sendMessageV.textField.delegate = self
+        sentText = sendMessageV.textField
+        let inputViewSize = CGRect(x: 0, y: 0, width: view.frame.width, height: SENDV_HEIGHT)
+        sendMessageV.setupInputViews(inputAccessoryView!,size: inputViewSize)
+        
+        collectionView?.translatesAutoresizingMaskIntoConstraints = false
+        collectionView?.alwaysBounceVertical = true
+        collectionView?.keyboardDismissMode = .interactive
+        collectionView?.backgroundColor = UIColor.white
+        collectionView?.register(ChatLogCell.self, forCellWithReuseIdentifier: cellId)
+        
+        // Put collectionView above sendMessageV
+        resizeSlideView(top: 10, bottom: 10)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // Used to automatically be "stuck" on the keyboard
+    override var inputAccessoryView: UIView? {
+        get {
+            return sendMessageV
+        }
+    }
+    
+    // Needed for inputAccessoryView to show
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    func dismissKeyboard() {
+        sendMessageV.textField.resignFirstResponder()
+        sendMessageV.textField.endEditing(true)
+    }
+    
+    private func resizeSlideView(top: CGFloat = 70, bottom: CGFloat = 0) {
+        collectionView?.contentInset = UIEdgeInsets(top: top, left: 0, bottom: bottom, right: 0)
+    }
     
     private func observeMsg() {
         let ref  = DB_REF.child(USR_MSG).child(userId!)
@@ -52,34 +105,18 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
                     
                     DispatchQueue.main.async {
                         self.collectionView?.reloadData()
-                        
-                        // Get the bottom part of UICollectionView
-                        let lastItem = self.messages.count - 1
-                        let lastItemIndex = IndexPath(item: lastItem, section: 0)
-                        self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: false)
+                        self.getLastMessageToAppear()
                     }
                 }
             })
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        collectionView?.alwaysBounceVertical = true
-        collectionView?.backgroundColor = UIColor.white
-        collectionView?.register(ChatLogCell.self, forCellWithReuseIdentifier: cellId)
-        
-        // Put collectionView above sendMessageV
-        let inset = SENDV_HEIGHT + 10
-        collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: inset, right: 0)
-        
-        sendMessageV.textField.delegate = self
-        sentText = sendMessageV.textField
-        
-        sendMessageV.setupInputViews(self.view)
-        
-        sendMessageV.sendBtn.addTarget(self, action: #selector(sendBtnPressed), for: UIControlEvents.touchUpInside)
+    private func getLastMessageToAppear() {
+        // Get the bottom part of UICollectionView
+        let lastItem = self.messages.count - 1
+        let lastItemIndex = IndexPath(item: lastItem, section: 0)
+        self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: false)
     }
     
     private func setupCollectionView() {
@@ -94,7 +131,7 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogCell
         
-        let msg = messages[indexPath.row]
+        let msg: Message = messages[indexPath.row]
         
         // Need to differenciate logged user from contact
         let isUser = msg.sender == userId
@@ -112,41 +149,5 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
         
         // Give size of the Cell
         return CGSize(width: cellWidth, height: size.height)
-    }
-    
-    func sendBtnPressed(){
-        print("spencer: Sending message...")
-        
-        // AutoId chronologically sorted
-        let ref = DB_REF.child(MESSAGE).childByAutoId()
-        let time = "\(NSDate().timeIntervalSince1970)"
-        
-        if let text = sentText.text, let receiverId = contact?.uid, let senderId = userId {
-            let values = [TEXT: text, RECEIVER: receiverId, SENDER: senderId, TIME: time] as [String : Any]
-            ref.updateChildValues(values) {
-                (error:Error?, reference:FIRDatabaseReference) in
-                if let err = error {
-                    print("spencer: \(err.localizedDescription)")
-                    Alert.message(self, title: "Error sending message", message: err.localizedDescription, buttonTitle: "ok")
-                    return
-                }
-                
-                // Update "user-messages" for sender first...
-                var usrMsgRef = DB_REF.child(USR_MSG).child(senderId)
-                let messageId = ref.key
-                usrMsgRef.updateChildValues([messageId:1])
-                
-                // ...Then update "user-messages" for receiver
-                usrMsgRef = DB_REF.child(USR_MSG).child(receiverId)
-                usrMsgRef.updateChildValues([messageId:1])
-            }
-            
-            sentText.text = ""
-        }
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        sendBtnPressed()
-        return true
     }
 }

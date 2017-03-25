@@ -33,8 +33,8 @@ class CellSize {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.center
         
-        let FONT = UIFont(name: FONT_NAME, size: FONT_SIZE)
-        let attr = [NSFontAttributeName: FONT, NSParagraphStyleAttributeName: paragraphStyle]
+        let FONT = UIFont(name: FONT_NAME, size: FONT_SIZE)!
+        let attr: [String: Any] = [NSFontAttributeName: FONT, NSParagraphStyleAttributeName: paragraphStyle]
         
         // Create Attributed String
         let text = NSAttributedString(string: txt, attributes: attr)

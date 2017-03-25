@@ -93,7 +93,7 @@ class HistoryC: UITableViewController, RecentD {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let message = self.messages[indexPath.row]
+        let message: Message = self.messages[indexPath.row]
         let id = self.currentUsrID! == message.sender ? message.receiver : message.sender
         
         if let userWritingTo = mUsers[id]{
