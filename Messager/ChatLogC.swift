@@ -82,7 +82,13 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
     }
     
     private func observeMsg() {
-        let ref  = DB_REF.child(USR_MSG).child(userId!)
+        
+        guard let contactId = contact?.uid else {
+            print("spencer: Contact.uid does not exist")
+            return
+        }
+        
+        let ref = DB_REF.child(USR_MSG).child(userId!).child(contactId)
         ref.observe(.childAdded) {
             (snap:FIRDataSnapshot) in
             
@@ -92,13 +98,6 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
                 (snap2:FIRDataSnapshot) in
                 
                 if let dict = snap2.value as? [String:String] {
-                    let sendId = dict[SENDER]!
-                    let receiveId = dict[RECEIVER]!
-                    
-                    guard sendId == self.contact?.uid || receiveId == self.contact?.uid else {
-                        return
-                    }
-                    
                     let msg = Message()
                     msg.setValuesForKeys(dict)
                     self.messages.append(msg)

@@ -15,6 +15,8 @@ class HistoryC: UITableViewController, RecentD {
     var currentEmail: String!
     var currentUsrID: String!
     
+    private var timer = Timer()
+    
     private let cellId = "cellId"
     
     override func viewDidLoad() {
@@ -48,48 +50,58 @@ class HistoryC: UITableViewController, RecentD {
         ref.observe(.childAdded) {
             (snap:FIRDataSnapshot) in
             
-            let msgId = snap.key
-            let msgsRef = DB_REF.child(MESSAGE).child(msgId)
+            let contactId = snap.key
             
-            msgsRef.observeSingleEvent(of: FIRDataEventType.value, with: {
-                (snapshot:FIRDataSnapshot) in
-                // Only show messages sent or received
-                if let dict = snapshot.value as? [String:String] {
-                    if let sentID = dict[SENDER], let getID = dict[RECEIVER] {
+            DB_REF.child(USR_MSG).child(self.currentUsrID).child(contactId).observe(.childAdded, with: { (contactSnap:FIRDataSnapshot) in
+                
+                let msgId = contactSnap.key
+                let msgsRef = DB_REF.child(MESSAGE).child(msgId)
+                
+                msgsRef.observeSingleEvent(of: FIRDataEventType.value, with: {
+                    (snapshot:FIRDataSnapshot) in
+                    // Only show messages sent or received
+                    if let dict = snapshot.value as? [String:String] {
                         let m = Message()
                         m.setValuesForKeys(dict)
                         
-                        // Other user that sent or received the message sent
-                        let id = self.currentUsrID! == sentID ? getID : sentID
-
-                        self.messageDict[id] = m
-                        self.messages = Array(self.messageDict.values)
-                        self.messages.sort(by: {
-                            (m1, m2) -> Bool in
-                            return Double(m1.timeStamp)! > Double(m2.timeStamp)!
-                        })
+                        self.messageDict[contactId] = m
                         
                         // Add User if not already in dictionary
-                        if self.mUsers[id] == nil {
-                            DB_REF.child(USR).child(id).observeSingleEvent(of: FIRDataEventType.value, with: {
+                        if self.mUsers[contactId] == nil {
+                            DB_REF.child(USR).child(contactId).observeSingleEvent(of: FIRDataEventType.value, with: {
                                 (snap:FIRDataSnapshot) in
                                 
                                 if let dict = snap.value as? [String:String] {
                                     let user = User()
                                     user.setValuesForKeys(dict)
                                     user.uid = snap.key
-                                    self.mUsers[id] = user
+                                    self.mUsers[contactId] = user
                                     
-                                    self.tableView.reloadData()
+                                    self.reloadTable()
                                 }
                             })
                         } else {
-                            self.tableView.reloadData()
+                            self.reloadTable()
                         }
                     }
-                }
+                })
             })
         }
+    }
+    
+    private func reloadTable() {
+        timer.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false, block: {
+            (_: Timer) in
+            
+            self.messages = Array(self.messageDict.values)
+            self.messages.sort(by: {
+                (m1, m2) -> Bool in
+                return Double(m1.timeStamp)! > Double(m2.timeStamp)!
+            })
+            
+            self.tableView.reloadData()
+        })
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

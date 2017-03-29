@@ -19,7 +19,7 @@ extension HistoryC {
     
     func showChatController(_ usr: User) {
         if usr.uid == currentUsrID! {
-            print("spencer: You cannot send message to yoruself")
+            print("spencer: You cannot send message to yourself")
             Alert.message(self, title: "Self messaging", message: "You cannot send message to yourself", buttonTitle: "Got it!")
         } else {
             print("spencer: Loading chat log...")
@@ -35,6 +35,11 @@ extension HistoryC {
     func logout(){
         if let loggedUserId = currentUsrID {
             DB_REF.child(USR_MSG).child(loggedUserId).removeAllObservers()
+            DB_REF.child(USR_MSG).child(loggedUserId).observeSingleEvent(of: .value, with: {
+                (snap) in
+                let contactId = snap.key
+                DB_REF.child(USR_MSG).child(loggedUserId).child(contactId).removeAllObservers()
+            })
             DB_REF.child(MESSAGE).removeAllObservers()
             messages.removeAll()
             messageDict.removeAll()

@@ -34,12 +34,12 @@ extension ChatLogC {
                 }
                 
                 // Update "user-messages" for sender first...
-                var usrMsgRef = DB_REF.child(USR_MSG).child(senderId)
+                var usrMsgRef = DB_REF.child(USR_MSG).child(senderId).child(receiverId)
                 let messageId = ref.key
                 usrMsgRef.updateChildValues([messageId:1])
                 
                 // ...Then update "user-messages" for receiver
-                usrMsgRef = DB_REF.child(USR_MSG).child(receiverId)
+                usrMsgRef = DB_REF.child(USR_MSG).child(receiverId).child(senderId)
                 usrMsgRef.updateChildValues([messageId:1])
             }
             
