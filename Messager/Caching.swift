@@ -52,7 +52,7 @@ extension UIImageView {
                     }
                 }
             } else {
-                print("spencer: Failed to Download image - \(error?.localizedDescription)")
+                print("spencer: Failed to Download image - \(String(describing: error?.localizedDescription))")
             }
         })
     }

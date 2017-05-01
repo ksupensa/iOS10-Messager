@@ -11,20 +11,96 @@ import Firebase
 
 extension ChatLogC {
     
+    func uploadImgPressed() {
+        print("spencer: UPLOAD TAPPED")
+        let imgPickerController = UIImagePickerController()
+        imgPickerController.allowsEditing = true
+        imgPickerController.delegate = self
+        
+        present(imgPickerController, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        print("we selected an image")
+        
+        var image: UIImage?
+        
+        if let imgEdited = info[UIImagePickerControllerEditedImage] as? UIImage{
+            
+            image = imgEdited
+            
+        } else if let imgOriginal = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            image = imgOriginal
+            
+        }
+        
+        if let selectedImg = image {
+            uploadImgToFireStorage(img: selectedImg)
+        }
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    private func uploadImgToFireStorage(img: UIImage) {
+        print("Uploaded to Firebase - \(img.debugDescription)")
+        
+        
+        if let imgData = UIImageJPEGRepresentation(img, 0.2) {
+            let imgId = UUID().uuidString
+            let metaData = FIRStorageMetadata()
+            metaData.contentType = "image/jpeg"
+            
+            let ref = FIRStorage.storage().reference().child(IMG_MSG).child(imgId)
+            
+            ref.put(imgData, metadata: metaData, completion: {
+                (metadata, error) in
+                
+                if let err = error {
+                    print("Error uploading picture into Storage - \(err.localizedDescription)")
+                    return
+                }
+                
+                if let imgUrl = metadata?.downloadURL()?.absoluteString {
+                    self.sendMessage(isText: false, imgUrl: imgUrl)
+                }
+            })
+        }
+        
+        
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         sendBtnPressed()
         return true
     }
     
     func sendBtnPressed(){
+        sendMessage(isText: true)
+    }
+    
+    private func sendMessage(isText: Bool, imgUrl: String? = nil){
         print("spencer: Sending message...")
         
         // AutoId chronologically sorted
         let ref = DB_REF.child(MESSAGE).childByAutoId()
         let time = "\(NSDate().timeIntervalSince1970)"
         
-        if let text = sentText.text, let receiverId = contact?.uid, let senderId = userId {
-            let values = [TEXT: text, RECEIVER: receiverId, SENDER: senderId, TIME: time] as [String : Any]
+        var data: String!
+        var string: String!
+        
+        if isText {
+            data = TEXT
+            string = sentText.text
+        } else {
+            data = IMG_URL
+            string = imgUrl
+        }
+        
+        print("spencer: String of Message: \(string)\n")
+        
+        if let text = string, let receiverId = contact?.uid, let senderId = userId {
+            let values = [data: text, RECEIVER: receiverId, SENDER: senderId, TIME: time] as [String : Any]
             ref.updateChildValues(values) {
                 (error:Error?, reference:FIRDatabaseReference) in
                 if let err = error {

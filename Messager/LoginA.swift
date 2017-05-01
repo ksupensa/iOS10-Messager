@@ -36,7 +36,6 @@ extension LoginC: UIImagePickerControllerDelegate, UINavigationControllerDelegat
     }
     
     func profileImgTapped(){
-        //Alert.message(self, title: "Spencer", message: "Profile image tapped", buttonTitle: "Yes, Sir!")
         let imgPicker = UIImagePickerController()
         imgPicker.allowsEditing = true
         imgPicker.delegate = self

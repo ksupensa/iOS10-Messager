@@ -8,7 +8,6 @@
 
 import Foundation
 import Firebase
-import Darwin
 
 let DB_REF = FIRDatabase.database().reference()
 
@@ -22,6 +21,7 @@ let SENDER = "sender"
 let RECEIVER = "receiver"
 let TIME = "timeStamp"
 let USR_MSG = "user-messages"
+let IMG_MSG = "image-messages"
 
 let CAMERA_IMG = "camera"
 let ICON_SIZE: CGFloat = 56
@@ -31,4 +31,4 @@ let FONT_SIZE: CGFloat = 15
 
 let SENDV_HEIGHT: CGFloat = 50
 
-let MAX_FLOAT = FLT_MAX
+let MAX_FLOAT = Float.greatestFiniteMagnitude

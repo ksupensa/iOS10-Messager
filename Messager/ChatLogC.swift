@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     // Represent the input Field part
     var sendMessageV: SendV =  {
@@ -48,11 +48,16 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(ChatLogCell.self, forCellWithReuseIdentifier: cellId)
         
-        // Put collectionView above sendMessageV
+        // Put 'collectionView' above 'sendMessageV'
         resizeSlideView(top: 10, bottom: 10)
         
+        // Dismiss keyboard if 'view' tapped
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
+        // Select image to upload if 'uploadImgView' tapped
+        let tapImg = UITapGestureRecognizer(target: self, action: #selector(uploadImgPressed))
+        sendMessageV.uploadImgView.addGestureRecognizer(tapImg)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
