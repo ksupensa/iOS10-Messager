@@ -29,11 +29,29 @@ class ChatLogCell: UICollectionViewCell {
         return view
     }()
     
+    let messageImgView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = 16
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.masksToBounds = true
+        imageView.contentMode = UIViewContentMode.scaleAspectFit
+        imageView.backgroundColor = UIColor.purple
+        return imageView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         addSubview(bubbleV)
         addSubview(txtV)
+        
+        bubbleV.addSubview(messageImgView)
+        
+        // Anchors: x, y, width, height
+        messageImgView.leftAnchor.constraint(equalTo: bubbleV.leftAnchor).isActive = true
+        messageImgView.topAnchor.constraint(equalTo: bubbleV.topAnchor).isActive = true
+        messageImgView.widthAnchor.constraint(equalTo: bubbleV.widthAnchor).isActive = true
+        messageImgView.heightAnchor.constraint(equalTo: bubbleV.heightAnchor).isActive = true
         
         // Anchors: x, y, width, height
         txtV.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
@@ -45,6 +63,10 @@ class ChatLogCell: UICollectionViewCell {
         bubbleV.bottomAnchor.constraint(equalTo: txtV.bottomAnchor).isActive = true
     }
     
+    func setImg(_ url: String? = nil){
+        messageImgView.loadImgFromCache(imgUrl: url)
+    }
+    
     var textW: NSLayoutConstraint!
     var textH: NSLayoutConstraint!
     var textRL: NSLayoutConstraint!
@@ -53,7 +75,6 @@ class ChatLogCell: UICollectionViewCell {
     var bubbleRL: NSLayoutConstraint!
     
     func setText(_ txt: String, isUser: Bool) {
-        
         let cellsize = CellSize.getCellSizeToFitText(txt, maxWidth: self.frame.width * 0.6)
         txtV.attributedText = cellsize.attributedString
         

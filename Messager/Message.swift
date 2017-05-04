@@ -10,9 +10,19 @@ import UIKit
 
 class Message: NSObject {
     private var _receiver: String!
-    private var _text: String!
+    private var _text: String?
     private var _sender: String!
     private var _timeStamp: String!
+    private var _imgURL: String?
+    
+    var imgURL: String? {
+        get {
+            return _imgURL
+        }
+        set {
+            _imgURL = newValue
+        }
+    }
     
     var sender: String {
         get {
@@ -23,7 +33,7 @@ class Message: NSObject {
         }
     }
     
-    var text: String {
+    var text: String? {
         get {
             return _text
         }

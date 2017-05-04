@@ -33,7 +33,7 @@ extension UIImageView {
         }
     }
     
-    func firebaseDownload(url: URL){
+    private func firebaseDownload(url: URL){
         // Download image from Firebase
         let ref = FIRStorage.storage().reference(forURL: url.absoluteString)
         ref.data(withMaxSize: 2 * 1024 * 1024, completion: {

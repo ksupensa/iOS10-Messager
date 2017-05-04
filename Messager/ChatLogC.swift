@@ -139,7 +139,21 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
         
         // Need to differenciate logged user from contact
         let isUser = msg.sender == userId
-        cell.setText(msg.text, isUser: isUser)
+        
+        if let text = msg.text {
+            cell.setText(text, isUser: isUser)
+            cell.messageImgView.isHidden = true
+            cell.txtV.isHidden = false
+            
+            cell.backgroundColor = UIColor.clear
+        } else if let imgUrl = msg.imgURL {
+            cell.setText("", isUser: true)
+            cell.txtV.isHidden = true
+            cell.messageImgView.isHidden = false
+            cell.setImg(imgUrl)
+            
+            cell.backgroundColor = UIColor.yellow
+        }
         
         return cell
     }
@@ -147,11 +161,17 @@ class ChatLogC: UICollectionViewController, UITextFieldDelegate, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let cellWidth = view.frame.width
-        let txt = messages[indexPath.row].text
         
-        let size = CellSize.getCellSizeToFitText(txt, maxWidth: cellWidth * 0.6).size!
+        if let txt = messages[indexPath.row].text {
         
-        // Give size of the Cell
-        return CGSize(width: cellWidth, height: size.height)
+            let size = CellSize.getCellSizeToFitText(txt, maxWidth: cellWidth * 0.6).size!
+            
+            // Give size of the Cell
+            return CGSize(width: cellWidth, height: size.height)
+        } else {
+            
+            print("spencer: 100 of Height")
+            return CGSize(width: cellWidth, height: 100)
+        }
     }
 }
