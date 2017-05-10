@@ -15,6 +15,8 @@ let USR = "users"
 let EMAIL = "email"
 let NAME = "name"
 let IMG_URL = "imgURL"
+let IMG_WIDTH = "imgWidth"
+let IMG_HEIGHT = "imgHeight"
 let MESSAGE = "messages"
 let TEXT = "text"
 let SENDER = "sender"
@@ -22,6 +24,7 @@ let RECEIVER = "receiver"
 let TIME = "timeStamp"
 let USR_MSG = "user-messages"
 let IMG_MSG = "image-messages"
+
 
 let CAMERA_IMG = "camera"
 let ICON_SIZE: CGFloat = 56

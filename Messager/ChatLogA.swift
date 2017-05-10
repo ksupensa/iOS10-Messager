@@ -62,7 +62,7 @@ extension ChatLogC {
                 }
                 
                 if let imgUrl = metadata?.downloadURL()?.absoluteString {
-                    self.sendMessage(isText: false, imgUrl: imgUrl)
+                    self.sendMessage(isText: false, imgUrl: imgUrl, image: img)
                 }
             })
         }
@@ -79,7 +79,7 @@ extension ChatLogC {
         sendMessage(isText: true)
     }
     
-    private func sendMessage(isText: Bool, imgUrl: String? = nil){
+    private func sendMessage(isText: Bool, imgUrl: String? = nil, image: UIImage? = nil){
         print("spencer: Sending message...")
         
         // AutoId chronologically sorted
@@ -100,7 +100,13 @@ extension ChatLogC {
         print("spencer: String of Message: \(string)\n")
         
         if let text = string, let receiverId = contact?.uid, let senderId = userId {
-            let values = [data: text, RECEIVER: receiverId, SENDER: senderId, TIME: time] as [String : Any]
+            var values = [data: text, RECEIVER: receiverId, SENDER: senderId, TIME: time] as [String:String]
+            // If message = Image
+            if let img = image {
+                values[IMG_WIDTH] = "\(img.size.width)"
+                values[IMG_HEIGHT] = "\(img.size.height)"
+            }
+            
             ref.updateChildValues(values) {
                 (error:Error?, reference:FIRDatabaseReference) in
                 if let err = error {
